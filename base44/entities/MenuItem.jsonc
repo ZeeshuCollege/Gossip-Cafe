@@ -1,0 +1,43 @@
+{
+  "name": "MenuItem",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Hot & Iced Coffee",
+        "Wraps & Japanese Bao",
+        "Speciality Burgers",
+        "Fresh Dough Pizza",
+        "Italian Pasta",
+        "Desserts & Mocktails",
+        "Texas Loaded Fries"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "dietary": {
+      "type": "string",
+      "enum": [
+        "veg",
+        "nonveg",
+        "spicy"
+      ],
+      "default": "nonveg"
+    },
+    "image_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "category"
+  ]
+}

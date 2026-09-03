@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 33% 97%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 74 32% 21%;
+    --primary-foreground: 40 33% 97%;
+    --secondary: 74 22% 39%;
+    --secondary-foreground: 40 33% 97%;
+    --muted: 40 20% 94%;
+    --muted-foreground: 74 12% 40%;
+    --accent: 74 22% 39%;
+    --accent-foreground: 40 33% 97%;
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 74 18% 86%;
+    --input: 74 18% 86%;
+    --ring: 74 22% 39%;
+    --chart-1: 74 32% 21%;
+    --chart-2: 74 22% 39%;
+    --chart-3: 40 20% 70%;
+    --chart-4: 40 33% 80%;
+    --chart-5: 74 12% 55%;
+    --radius: 0.5rem;
+    --font-heading: 'Cormorant Garamond', ui-serif, Georgia, serif;
+    --font-body: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Cormorant Garamond', ui-serif, Georgia, serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --sidebar-background: 40 33% 97%;
+    --sidebar-foreground: 74 32% 21%;
+    --sidebar-primary: 74 32% 21%;
+    --sidebar-primary-foreground: 40 33% 97%;
+    --sidebar-accent: 40 20% 94%;
+    --sidebar-accent-foreground: 74 32% 21%;
+    --sidebar-border: 74 18% 86%;
+    --sidebar-ring: 74 22% 39%;
+  }
+
+  .dark {
+    --background: 74 20% 12%;
+    --foreground: 40 33% 97%;
+    --card: 74 20% 15%;
+    --card-foreground: 40 33% 97%;
+    --popover: 74 20% 15%;
+    --popover-foreground: 40 33% 97%;
+    --primary: 40 33% 97%;
+    --primary-foreground: 74 32% 21%;
+    --secondary: 74 22% 39%;
+    --secondary-foreground: 40 33% 97%;
+    --muted: 74 15% 22%;
+    --muted-foreground: 40 20% 70%;
+    --accent: 74 22% 39%;
+    --accent-foreground: 40 33% 97%;
+    --destructive: 0 50% 40%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 74 15% 25%;
+    --input: 74 15% 25%;
+    --ring: 74 22% 39%;
+    --sidebar-background: 74 20% 12%;
+    --sidebar-foreground: 40 33% 97%;
+    --sidebar-primary: 40 33% 97%;
+    --sidebar-primary-foreground: 74 32% 21%;
+    --sidebar-accent: 74 15% 22%;
+    --sidebar-accent-foreground: 40 33% 97%;
+    --sidebar-border: 74 15% 25%;
+    --sidebar-ring: 74 22% 39%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  ::selection {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .squircle {
+    border-radius: 38% 62% 57% 43% / 47% 38% 62% 53%;
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "Reservation",
+  "type": "object",
+  "properties": {
+    "table_id": {
+      "type": "string"
+    },
+    "table_name": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "time": {
+      "type": "string"
+    },
+    "party_size": {
+      "type": "number",
+      "default": 2
+    },
+    "name": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "confirmed",
+        "cancelled"
+      ],
+      "default": "confirmed"
+    }
+  },
+  "required": [
+    "table_id",
+    "table_name",
+    "date",
+    "time",
+    "party_size",
+    "name",
+    "phone"
+  ]
+}
