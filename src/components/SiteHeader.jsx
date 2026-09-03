@@ -71,14 +71,14 @@ export default function SiteHeader() {
                   className="flex items-center gap-2 px-3 h-10 rounded-full border border-border hover:border-primary/40 transition-colors"
                 >
                   <span className="w-7 h-7 rounded-full bg-primary text-primary-foreground grid place-items-center text-xs font-medium">
-                    {user.name?.[0]?.toUpperCase() || 'G'}
+                    {(user.user_metadata?.name || user.name || user.email || 'G')[0].toUpperCase()}
                   </span>
                   <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
                 </button>
                 {menuOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-card border border-border rounded-2xl shadow-xl p-2 animate-fade-in">
                     <div className="px-3 py-2">
-                      <p className="text-sm font-medium text-foreground truncate">{user.name}</p>
+                      <p className="text-sm font-medium text-foreground truncate">{user.user_metadata?.name || user.name || 'Guest'}</p>
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
                     <button

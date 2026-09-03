@@ -1,0 +1,1 @@
+export { supabase, isSupabaseConfigured } from '@/api/supabaseClient';

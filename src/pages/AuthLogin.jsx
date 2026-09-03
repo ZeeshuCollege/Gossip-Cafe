@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMockAuth } from '@/lib/mockAuth';
 
-// AUTH BLUEPRINT — login UI only. Logic is stubbed in mockAuth.
-// TODO: replace login() with a real auth provider (Base44 SDK or custom).
-
 function GoogleButton({ onClick, label }) {
   return (
     <button
@@ -46,7 +43,7 @@ export default function AuthLogin() {
   return (
     <div className="min-h-screen grid place-items-center bg-background px-5 py-16">
       <div className="w-full max-w-md">
-        <Link to="/" className="block text-center font-display text-3xl text-primary mb-2">Gossip</Link>
+        <Link to="/" className="block text-center font-display text-3xl text-primary mb-2">CodeSupa</Link>
         <p className="text-center text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-10">Café &amp; Restro</p>
 
         <div className="bg-card border border-border rounded-3xl p-8">
@@ -82,7 +79,7 @@ export default function AuthLogin() {
           </div>
         </div>
         <p className="mt-6 text-center text-xs text-muted-foreground italic">
-          Blueprint only — connect a real auth provider before launch.
+          Authentication is powered by Supabase.
         </p>
       </div>
     </div>

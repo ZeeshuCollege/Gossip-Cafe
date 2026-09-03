@@ -2,9 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMockAuth } from '@/lib/mockAuth';
 
-// AUTH BLUEPRINT — sign-up + OTP UI only. OTP send/verify is stubbed in mockAuth.
-// TODO: replace signup()/verifyOtp() with a real SMS/email OTP provider.
-
 function GoogleButton({ onClick, label }) {
   return (
     <button onClick={onClick} className="w-full h-12 rounded-full border border-primary/30 bg-background text-primary text-sm uppercase tracking-[0.14em] hover:bg-muted transition-colors flex items-center justify-center gap-3">
@@ -54,7 +51,7 @@ export default function AuthSignup() {
   const { signup, verifyOtp, resendOtp, loginWithGoogle } = useMockAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState('form'); // form | otp
-  const [form, setForm] = useState({ name: '', email: '', phone: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '' });
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -106,7 +103,7 @@ export default function AuthSignup() {
   return (
     <div className="min-h-screen grid place-items-center bg-background px-5 py-16">
       <div className="w-full max-w-md">
-        <Link to="/" className="block text-center font-display text-3xl text-primary mb-2">Gossip</Link>
+        <Link to="/" className="block text-center font-display text-3xl text-primary mb-2">CodeSupa</Link>
         <p className="text-center text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-10">Café &amp; Restro</p>
 
         <div className="bg-card border border-border rounded-3xl p-8">
@@ -127,9 +124,13 @@ export default function AuthSignup() {
                   <label className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Phone (optional)</label>
                   <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full h-11 mt-2 px-4 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary/50" placeholder="+91 ..." />
                 </div>
+                <div>
+                  <label className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Password</label>
+                  <input value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} type="password" required minLength={6} className="w-full h-11 mt-2 px-4 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary/50" placeholder="At least 6 characters" />
+                </div>
                 {error && <p className="text-sm text-destructive">{error}</p>}
                 <button type="submit" disabled={busy} className="w-full h-12 bg-primary text-primary-foreground rounded-full text-sm uppercase tracking-[0.14em] hover:bg-secondary disabled:opacity-50 transition-colors">
-                  {busy ? 'Sending code…' : 'Send verification code'}
+                  {busy ? 'Creating account…' : 'Send verification code'}
                 </button>
               </form>
               <div className="flex items-center gap-3 my-6">
@@ -163,7 +164,7 @@ export default function AuthSignup() {
           )}
         </div>
         <p className="mt-6 text-center text-xs text-muted-foreground italic">
-          Blueprint only — OTP is mocked (try 123456). Connect a real provider before launch.
+          Verification emails are sent by Supabase.
         </p>
       </div>
     </div>

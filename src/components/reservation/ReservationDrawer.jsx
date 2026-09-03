@@ -5,7 +5,7 @@ import DatePicker from './DatePicker';
 import TimeSlots from './TimeSlots';
 import { useMockAuth } from '@/lib/mockAuth';
 
-export default function ReservationDrawer({ table, bookedIds = [], onClose, onConfirmed }) {
+export default function ReservationDrawer({ table, reservations = [], onClose, onConfirmed }) {
   const { user } = useMockAuth();
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -16,7 +16,12 @@ export default function ReservationDrawer({ table, bookedIds = [], onClose, onCo
 
   useEffect(() => {
     if (user) {
-      setForm((f) => ({ ...f, name: f.name || user.name || '', email: f.email || user.email || '', phone: f.phone || user.phone || '' }));
+      setForm((f) => ({
+        ...f,
+        name: f.name || user.user_metadata?.name || user.name || '',
+        email: f.email || user.email || '',
+        phone: f.phone || user.user_metadata?.phone || user.phone || ''
+      }));
     }
   }, [user]);
 
@@ -26,10 +31,17 @@ export default function ReservationDrawer({ table, bookedIds = [], onClose, onCo
 
   if (!table) return null;
 
-  const isBookedOnDate = bookedIds.includes(table.id);
+  const reservationsForTable = reservations.filter(
+    (reservation) => reservation.table_id === table.id && reservation.status !== 'cancelled'
+  );
+  const isBookedOnDate = Boolean(
+    date && time && reservationsForTable.some(
+      (reservation) => reservation.date === date && reservation.time === time
+    )
+  );
 
   const submit = async () => {
-    if (!date || !time || !form.name || !form.phone) return;
+    if (!date || !time || !form.name || !form.phone || isBookedOnDate) return;
     setSubmitting(true);
     try {
       const rec = await base44.entities.Reservation.create({
@@ -102,7 +114,7 @@ export default function ReservationDrawer({ table, bookedIds = [], onClose, onCo
 
               {isBookedOnDate && date && (
                 <p className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-xl">
-                  This table is already booked on {prettyDate}. Pick another date.
+                  This table is already booked at {prettyTime} on {prettyDate}. Pick another time.
                 </p>
               )}
 

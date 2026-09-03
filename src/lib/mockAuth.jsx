@@ -1,93 +1,99 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { isSupabaseConfigured, supabase } from '@/api/supabaseClient';
 
-// ───────────────────────────────────────────────────────────────────────────
-// MOCK AUTH — BLUEPRINT ONLY
-// This is a front-end-only stub so the owner/developer can wire real auth later.
-// Replace the stubbed methods below with real calls (Base44 SDK loginViaEmailPassword,
-// verifyOtp, a Google OAuth client, or an SMS/email OTP provider).
-// No real credentials, OAuth client IDs, or OTP keys are used here yet.
-// ───────────────────────────────────────────────────────────────────────────
+const AuthContext = createContext(null);
 
-const MockAuthContext = createContext(null);
-const STORAGE_KEY = 'gossip_mock_user';
+const configurationError = () =>
+  new Error('Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
 
 export function MockAuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [pendingOtp, setPendingOtp] = useState(null);
+  const [pendingEmail, setPendingEmail] = useState('');
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setUser(JSON.parse(raw));
-    } catch {
-      /* ignore */
-    }
+    if (!supabase) return undefined;
+    let mounted = true;
+    supabase.auth.getUser().then(({ data: { user: currentUser } }) => {
+      if (mounted) setUser(currentUser);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (mounted) setUser(session?.user ?? null);
+    });
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const persist = (u) => {
-    setUser(u);
-    if (u) localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
-    else localStorage.removeItem(STORAGE_KEY);
-  };
-
-  // TODO: replace with real auth (e.g. base44.auth.loginViaEmailPassword)
   const login = async (email, password) => {
-    if (!email || !password) throw new Error('Email and password are required');
-    const u = { email, name: email.split('@')[0], phone: '' };
-    persist(u);
-    return u;
+    if (!supabase) throw configurationError();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return data.user;
   };
 
-  // TODO: replace with real OTP send via SMS/email provider
-  const signup = async ({ name, email, phone }) => {
-    const code = '123456'; // mock OTP — replace with real provider-generated code
-    setPendingOtp({ name, email, phone, code });
-    return { otpSent: true };
+  const signup = async ({ name, email, phone, password }) => {
+    if (!supabase) throw configurationError();
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name, phone } }
+    });
+    if (error) throw error;
+    setPendingEmail(email);
+    return data;
   };
 
-  // TODO: replace with real OTP verification
-  const verifyOtp = async (otpCode) => {
-    if (!pendingOtp) throw new Error('No pending verification');
-    if (!otpCode || otpCode.length !== 6) throw new Error('Enter the 6-digit code');
-    // Blueprint: accept any 6 digits (or the mock 123456)
-    const u = {
-      name: pendingOtp.name,
-      email: pendingOtp.email,
-      phone: pendingOtp.phone || ''
-    };
-    persist(u);
-    setPendingOtp(null);
-    return u;
+  const verifyOtp = async (token) => {
+    if (!supabase) throw configurationError();
+    const { data, error } = await supabase.auth.verifyOtp({ email: pendingEmail, token, type: 'signup' });
+    if (error) throw error;
+    setUser(data.user);
+    return data.user;
   };
 
   const resendOtp = async () => {
-    if (!pendingOtp) return;
-    setPendingOtp({ ...pendingOtp, code: '123456' });
-    return { otpSent: true };
+    if (!supabase) throw configurationError();
+    const { error } = await supabase.auth.resend({ type: 'signup', email: pendingEmail });
+    if (error) throw error;
   };
 
-  // TODO: plug a real Google OAuth client ID here
   const loginWithGoogle = async () => {
-    const u = { name: 'Google User', email: 'guest@gmail.com', phone: '' };
-    persist(u);
-    return u;
+    if (!supabase) throw configurationError();
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/` }
+    });
+    if (error) throw error;
   };
 
-  const logout = () => persist(null);
-
-  const updateUser = (data) => {
-    const u = { ...user, ...data };
-    persist(u);
-    return u;
+  const logout = async () => {
+    if (!supabase) {
+      setUser(null);
+      return;
+    }
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    setUser(null);
   };
+
+  const updateUser = (data) => (user ? { ...user, ...data } : user);
 
   return (
-    <MockAuthContext.Provider
-      value={{ user, login, signup, verifyOtp, resendOtp, loginWithGoogle, logout, updateUser, pendingOtp }}
-    >
+    <AuthContext.Provider value={{
+      user,
+      login,
+      signup,
+      verifyOtp,
+      resendOtp,
+      loginWithGoogle,
+      logout,
+      updateUser,
+      isSupabaseConfigured
+    }}>
       {children}
-    </MockAuthContext.Provider>
+    </AuthContext.Provider>
   );
 }
 
-export const useMockAuth = () => useContext(MockAuthContext);
+export const useMockAuth = () => useContext(AuthContext);

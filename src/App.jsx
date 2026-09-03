@@ -15,6 +15,8 @@ import PolicyTerms from '@/pages/PolicyTerms';
 import AuthLogin from '@/pages/AuthLogin';
 import AuthSignup from '@/pages/AuthSignup';
 import Logout from '@/pages/Logout';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
 import PageTransition from './components/PageTransition';
 // Add page imports here
 
@@ -55,6 +57,8 @@ const AuthenticatedApp = () => {
           <Route path="/login" element={<AuthLogin />} />
           <Route path="/signup" element={<AuthSignup />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       )}
@@ -66,17 +70,17 @@ const AuthenticatedApp = () => {
 function App() {
 
   return (
-    <AuthProvider>
+    <MockAuthProvider>
+      <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <ScrollToTop />
-          <MockAuthProvider>
-            <AuthenticatedApp />
-          </MockAuthProvider>
+          <AuthenticatedApp />
         </Router>
         <Toaster />
       </QueryClientProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </MockAuthProvider>
   )
 }
 
