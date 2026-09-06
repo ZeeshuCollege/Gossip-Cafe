@@ -4,13 +4,8 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Clock, MapPin } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 
-const SITE = 'https://go-ssipcafe.co.in/wp-content/uploads/2025/09';
-const hero = `${SITE}/about-01-free-img.webp`;
-const ambience = `${SITE}/1.webp`;
-const coffee = `${SITE}/Hot-Cold-Coffees-e1757514392113.webp`;
-const baoburger = `${SITE}/BAO-Burger.webp`;
-const pizzapasta = `${SITE}/Pizza-Pasta.webp`;
-const desserts = `${SITE}/Hazelnut-Coffee.webp`;
+const hero = '/images/generated/cafe-hero.svg';
+const ambience = '/images/generated/cafe-interior.svg';
 
 const VIDS = 'https://media.base44.com/videos/public/6a99055dfce05e315129068b';
 const categories = [
@@ -21,12 +16,12 @@ const categories = [
 ];
 
 const gallery = [
-  `${SITE}/1.webp`,
-  `${SITE}/2.webp`,
-  `${SITE}/3.webp`,
-  `${SITE}/Korean-wings.jpeg`,
-  `${SITE}/Chocolate-Cold-Coffee.webp`,
-  `${SITE}/Loaded-Fries.jpeg`
+  '/images/generated/gallery-coffee.svg',
+  '/images/generated/gallery-bao.svg',
+  '/images/generated/gallery-pizza.svg',
+  '/images/generated/gallery-dessert.svg',
+  '/images/generated/gallery-night.svg',
+  '/images/generated/gallery-table.svg'
 ];
 
 function Hero() {

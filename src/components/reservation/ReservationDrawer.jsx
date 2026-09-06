@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check, Users, Calendar, Clock } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import DatePicker from './DatePicker';
 import TimeSlots from './TimeSlots';
 import { useMockAuth } from '@/lib/mockAuth';
+import { saveReservation } from '@/data/localData';
 
 export default function ReservationDrawer({ table, bookedIds = [], onClose, onConfirmed }) {
   const { user } = useMockAuth();
@@ -32,7 +32,7 @@ export default function ReservationDrawer({ table, bookedIds = [], onClose, onCo
     if (!date || !time || !form.name || !form.phone) return;
     setSubmitting(true);
     try {
-      const rec = await base44.entities.Reservation.create({
+      const rec = saveReservation({
         table_id: table.id,
         table_name: table.name,
         date,

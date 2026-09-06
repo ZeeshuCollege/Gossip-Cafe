@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import FloorPlan from '@/components/floorplan/FloorPlan';
 import ReservationDrawer from '@/components/reservation/ReservationDrawer';
+import { getReservations, tables } from '@/data/localData';
 
 function Legend() {
   const items = [
@@ -22,25 +22,10 @@ function Legend() {
 }
 
 export default function Reservation() {
-  const [tables, setTables] = useState([]);
   const [reservations, setReservations] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
 
-  const load = async () => {
-    try {
-      const [t, r] = await Promise.all([
-        base44.entities.Table.list(),
-        base44.entities.Reservation.list()
-      ]);
-      setTables(t);
-      setReservations(r);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const load = () => setReservations(getReservations());
 
   useEffect(() => { load(); }, []);
 
@@ -57,19 +42,15 @@ export default function Reservation() {
           </p>
         </div>
 
-        {loading ? (
-          <div className="py-24 text-center text-muted-foreground">Preparing the floor plan…</div>
-        ) : (
-          <div className="bg-card border border-border rounded-3xl p-4 sm:p-8">
-            <FloorPlan
-              tables={tables}
-              bookedIds={bookedIds}
-              selectedId={selected?.id}
-              onSelect={setSelected}
-            />
-            <Legend />
-          </div>
-        )}
+        <div className="bg-card border border-border rounded-3xl p-4 sm:p-8">
+          <FloorPlan
+            tables={tables}
+            bookedIds={bookedIds}
+            selectedId={selected?.id}
+            onSelect={setSelected}
+          />
+          <Legend />
+        </div>
 
         <p className="mt-6 text-sm text-muted-foreground text-center">
           Tap a table to begin. Greyed tables are already reserved.

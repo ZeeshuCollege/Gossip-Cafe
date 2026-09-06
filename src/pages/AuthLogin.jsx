@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMockAuth } from '@/lib/mockAuth';
 
-// AUTH BLUEPRINT — login UI only. Logic is stubbed in mockAuth.
-// TODO: replace login() with a real auth provider (Base44 SDK or custom).
-
 function GoogleButton({ onClick, label }) {
   return (
     <button

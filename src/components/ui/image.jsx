@@ -109,8 +109,8 @@ ResponsiveImage.displayName = "ResponsiveImage"
 
 /**
  * Image with built-in Wix Media Platform support: canonical public images on
- * media.base44.com and static.wixstatic.com/media are resized to the rendered
- * container per device pixel ratio and re-encoded to WebP; `fittingType="fill"`
+ * Supported hosted media URLs are resized to the rendered container per device
+ * pixel ratio and re-encoded to WebP; `fittingType="fill"`
  * crops server-side, optionally anchored at a focal point. Other URLs render
  * as a plain <img>. Failed transforms retry the original URL; only a broken
  * original swaps to the generic fallback image.

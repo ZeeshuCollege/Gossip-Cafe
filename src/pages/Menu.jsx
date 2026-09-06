@@ -1,31 +1,37 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import MenuCard from '@/components/MenuCard';
+import { menuItems } from '@/data/localData';
 
 const CATEGORIES = [
   'All',
-  'Hot & Iced Coffee',
-  'Wraps & Japanese Bao',
-  'Speciality Burgers',
+  'Starter',
+  'Texas Loaded Fries',
+  'Wraps',
+  'Japanese Bao',
+  'Specialty Burgers - Home Made',
   'Fresh Dough Pizza',
+  'Chicken Pizza',
   'Italian Pasta',
-  'Desserts & Mocktails',
-  'Texas Loaded Fries'
+  'International Desserts',
+  'Signature Cold Coffee',
+  'Matcha Hot & Cold',
+  'Boba Coffee & Drinks',
+  'Milk Shakes',
+  'Premium Mocktail & Mojito',
+  'Smoothies',
+  'Iced Tea & Cooler',
+  'Coffee Extra Toppings',
+  'Water',
+  'Hot Coffee',
+  'Floating Iced Coffee'
 ];
 
 export default function Menu() {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [items] = useState(menuItems);
+  const [loading, setLoading] = useState(false);
   const [active, setActive] = useState('All');
   const [query, setQuery] = useState('');
-
-  useEffect(() => {
-    base44.entities.MenuItem.list()
-      .then(setItems)
-      .catch((e) => console.error(e))
-      .finally(() => setLoading(false));
-  }, []);
 
   const filtered = useMemo(() => {
     return items.filter((it) => {

@@ -3,8 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 // ───────────────────────────────────────────────────────────────────────────
 // MOCK AUTH — BLUEPRINT ONLY
 // This is a front-end-only stub so the owner/developer can wire real auth later.
-// Replace the stubbed methods below with real calls (Base44 SDK loginViaEmailPassword,
-// verifyOtp, a Google OAuth client, or an SMS/email OTP provider).
+// This lightweight browser-only auth keeps the demo usable without a server.
 // No real credentials, OAuth client IDs, or OTP keys are used here yet.
 // ───────────────────────────────────────────────────────────────────────────
 
@@ -30,7 +29,6 @@ export function MockAuthProvider({ children }) {
     else localStorage.removeItem(STORAGE_KEY);
   };
 
-  // TODO: replace with real auth (e.g. base44.auth.loginViaEmailPassword)
   const login = async (email, password) => {
     if (!email || !password) throw new Error('Email and password are required');
     const u = { email, name: email.split('@')[0], phone: '' };
@@ -38,18 +36,15 @@ export function MockAuthProvider({ children }) {
     return u;
   };
 
-  // TODO: replace with real OTP send via SMS/email provider
   const signup = async ({ name, email, phone }) => {
     const code = '123456'; // mock OTP — replace with real provider-generated code
     setPendingOtp({ name, email, phone, code });
     return { otpSent: true };
   };
 
-  // TODO: replace with real OTP verification
   const verifyOtp = async (otpCode) => {
     if (!pendingOtp) throw new Error('No pending verification');
     if (!otpCode || otpCode.length !== 6) throw new Error('Enter the 6-digit code');
-    // Blueprint: accept any 6 digits (or the mock 123456)
     const u = {
       name: pendingOtp.name,
       email: pendingOtp.email,
@@ -66,7 +61,6 @@ export function MockAuthProvider({ children }) {
     return { otpSent: true };
   };
 
-  // TODO: plug a real Google OAuth client ID here
   const loginWithGoogle = async () => {
     const u = { name: 'Google User', email: 'guest@gmail.com', phone: '' };
     persist(u);
