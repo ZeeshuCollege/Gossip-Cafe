@@ -24,12 +24,13 @@ function Legend() {
 export default function Reservation() {
   const [reservations, setReservations] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [selectedDate, setSelectedDate] = useState('');
 
-  const load = () => setReservations(getReservations());
+  const load = async () => setReservations(await getReservations());
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load().catch(console.error); }, []);
 
-  const bookedIds = reservations.map((r) => r.table_id);
+  const bookedIds = reservations.filter((r) => r.date === selectedDate).map((r) => r.table_id);
 
   return (
     <div className="pt-28 sm:pt-32">
@@ -46,6 +47,7 @@ export default function Reservation() {
           <FloorPlan
             tables={tables}
             bookedIds={bookedIds}
+            onDateChange={setSelectedDate}
             selectedId={selected?.id}
             onSelect={setSelected}
           />

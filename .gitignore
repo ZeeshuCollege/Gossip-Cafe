@@ -1,6 +1,7 @@
-#env
+# Environment files
 .env
 .env.*
+!.env.example
 
 # Logs
 /logs
@@ -11,9 +12,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+node_modules/
+dist/
+dist-ssr/
 *.local
 
 # Editor directories and files
@@ -27,5 +28,8 @@ dist-ssr
 *.sln
 *.sw?
 
-.env
-.vite
+.vite/
+
+# Local application data
+data/*.sqlite
+data/*.sqlite-*

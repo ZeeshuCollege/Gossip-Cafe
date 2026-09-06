@@ -36,8 +36,12 @@ export default function AuthLogin() {
   };
 
   const google = async () => {
-    await loginWithGoogle();
-    navigate('/');
+    setError('');
+    try {
+      await loginWithGoogle();
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -78,9 +82,6 @@ export default function AuthLogin() {
             <p className="text-muted-foreground">New here? <Link to="/signup" className="text-primary border-b border-primary/40">Create an account</Link></p>
           </div>
         </div>
-        <p className="mt-6 text-center text-xs text-muted-foreground italic">
-          Blueprint only — connect a real auth provider before launch.
-        </p>
       </div>
     </div>
   );

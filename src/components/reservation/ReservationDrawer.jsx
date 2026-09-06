@@ -5,7 +5,7 @@ import TimeSlots from './TimeSlots';
 import { useMockAuth } from '@/lib/mockAuth';
 import { saveReservation } from '@/data/localData';
 
-export default function ReservationDrawer({ table, bookedIds = [], onClose, onConfirmed }) {
+export default function ReservationDrawer({ table, bookedIds = [], onClose, onConfirmed, onDateChange }) {
   const { user } = useMockAuth();
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -13,6 +13,7 @@ export default function ReservationDrawer({ table, bookedIds = [], onClose, onCo
   const [form, setForm] = useState({ name: '', phone: '', email: '', notes: '' });
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -21,7 +22,7 @@ export default function ReservationDrawer({ table, bookedIds = [], onClose, onCo
   }, [user]);
 
   useEffect(() => {
-    setDate(''); setTime(''); setDone(null); setParty(Math.min(2, table?.capacity || 2));
+    setDate(''); setTime(''); setDone(null); setError(''); setParty(Math.min(2, table?.capacity || 2));
   }, [table?.id]);
 
   if (!table) return null;
@@ -30,7 +31,12 @@ export default function ReservationDrawer({ table, bookedIds = [], onClose, onCo
 
   const submit = async () => {
     if (!date || !time || !form.name || !form.phone) return;
+    if (!user) {
+      window.location.href = '/login';
+      return;
+    }
     setSubmitting(true);
+    setError('');
     try {
       const rec = saveReservation({
         table_id: table.id,
@@ -47,7 +53,7 @@ export default function ReservationDrawer({ table, bookedIds = [], onClose, onCo
       setDone(rec);
       onConfirmed?.(rec);
     } catch (e) {
-      console.error(e);
+      setError(e.message);
     } finally {
       setSubmitting(false);
     }
@@ -110,7 +116,7 @@ export default function ReservationDrawer({ table, bookedIds = [], onClose, onCo
                 <label className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
                   <Calendar className="w-3.5 h-3.5" /> Choose a date
                 </label>
-                <DatePicker value={date} onChange={(d) => { setDate(d); setTime(''); }} />
+                <DatePicker value={date} onChange={(d) => { setDate(d); setTime(''); onDateChange?.(d); }} />
               </div>
 
               <div>
@@ -151,6 +157,7 @@ export default function ReservationDrawer({ table, bookedIds = [], onClose, onCo
                     className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm focus:outline-none focus:border-primary/50 resize-none"
                   />
                 </div>
+                {error && <p className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-xl">{error}</p>}
               </div>
             </>
           )}

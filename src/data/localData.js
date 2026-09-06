@@ -133,18 +133,24 @@ export const tables = [
   { id: 'table-9', name: '09', capacity: 2, shape: 'bar', x: 580, y: 490, width: 64, height: 64, zone: 'bar' }
 ];
 
-const RESERVATIONS_KEY = 'gossip_cafe_reservations';
-
-export function getReservations() {
-  try {
-    return JSON.parse(localStorage.getItem(RESERVATIONS_KEY) || '[]');
-  } catch {
-    return [];
-  }
+export async function getReservations() {
+  const response = await fetch('/api/reservations', {
+    headers: { Authorization: `Bearer ${localStorage.getItem('gossip_cafe_auth_token') || ''}` }
+  });
+  if (!response.ok) throw new Error('Unable to load reservations');
+  return (await response.json()).reservations;
 }
 
-export function saveReservation(reservation) {
-  const reservations = [...getReservations(), { ...reservation, id: crypto.randomUUID() }];
-  localStorage.setItem(RESERVATIONS_KEY, JSON.stringify(reservations));
-  return reservation;
+export async function saveReservation(reservation) {
+  const response = await fetch('/api/reservations', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('gossip_cafe_auth_token') || ''}`
+    },
+    body: JSON.stringify(reservation)
+  });
+  const body = await response.json();
+  if (!response.ok) throw new Error(body.error || 'Unable to save reservation');
+  return body.reservation;
 }
