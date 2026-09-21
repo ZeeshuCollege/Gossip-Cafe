@@ -14,6 +14,7 @@ import Reservation from '@/pages/Reservation';
 import PolicyTerms from '@/pages/PolicyTerms';
 import AuthLogin from '@/pages/AuthLogin';
 import AuthSignup from '@/pages/AuthSignup';
+import AuthCallback from '@/pages/AuthCallback';
 import Logout from '@/pages/Logout';
 import PageTransition from './components/PageTransition';
 // Add page imports here
@@ -54,6 +55,7 @@ const AuthenticatedApp = () => {
           </Route>
           <Route path="/login" element={<AuthLogin />} />
           <Route path="/signup" element={<AuthSignup />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>

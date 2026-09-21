@@ -133,24 +133,59 @@ export const tables = [
   { id: 'table-9', name: '09', capacity: 2, shape: 'bar', x: 580, y: 490, width: 64, height: 64, zone: 'bar' }
 ];
 
+const RESERVATIONS_KEY = 'gossip_cafe_reservations';
+
 export async function getReservations() {
-  const response = await fetch('/api/reservations', {
-    headers: { Authorization: `Bearer ${localStorage.getItem('gossip_cafe_auth_token') || ''}` }
-  });
-  if (!response.ok) throw new Error('Unable to load reservations');
-  return (await response.json()).reservations;
+  try {
+    const token = localStorage.getItem('gossip_cafe_auth_token') || '';
+    const response = await fetch('/api/reservations', {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    });
+    if (response.ok) {
+      const data = await response.json();
+      if (Array.isArray(data?.reservations)) {
+        return data.reservations;
+      }
+    }
+  } catch {
+    // Backend not running or unreachable (e.g., hosted statically on Netlify)
+  }
+
+  try {
+    return JSON.parse(localStorage.getItem(RESERVATIONS_KEY) || '[]');
+  } catch {
+    return [];
+  }
 }
 
 export async function saveReservation(reservation) {
-  const response = await fetch('/api/reservations', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('gossip_cafe_auth_token') || ''}`
-    },
-    body: JSON.stringify(reservation)
-  });
-  const body = await response.json();
-  if (!response.ok) throw new Error(body.error || 'Unable to save reservation');
-  return body.reservation;
+  try {
+    const token = localStorage.getItem('gossip_cafe_auth_token') || '';
+    const response = await fetch('/api/reservations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      },
+      body: JSON.stringify(reservation)
+    });
+    if (response.ok) {
+      const body = await response.json();
+      if (body?.reservation) return body.reservation;
+    }
+  } catch {
+    // Fallback to localStorage
+  }
+
+  try {
+    const current = JSON.parse(localStorage.getItem(RESERVATIONS_KEY) || '[]');
+    const newRes = {
+      ...reservation,
+      id: reservation.id || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()))
+    };
+    localStorage.setItem(RESERVATIONS_KEY, JSON.stringify([...current, newRes]));
+    return newRes;
+  } catch {
+    return reservation;
+  }
 }
